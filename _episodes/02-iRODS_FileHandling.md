@@ -1,52 +1,33 @@
 ---
-title: "GitHub, Markdown, and Jekyll"
-teaching: 10
+title: "Introduction iRODS Python API"
+teaching: 30
 exercises: 0
 questions:
-- "How are pages published?"
+- "How to do basic file handling with the iRODS Python API"
+- "How to use the iRODS Python API in data provenance"
 objectives:
-- "Explain how GitHub Pages produce web sites from Git repositories."
-- "Explain Jekyll's formatting rules."
+- "Connect to iRODS via Python API"
+- "Upload/Download data objects"
+- "Create and run through collections"
+- "Metadata handling of data objects and collections"
+- "Querying data objects and collections based on metadata"
 keypoints:
-- "Lessons are stored in Git repositories on GitHub."
-- "Lessons are written in Markdown."
-- "Jekyll translates the files in the gh-pages branch into HTML for viewing."
-- "The site's configuration is stored in _config.yml."
-- "Each page's configuration is stored at the top of that page."
-- "Groups of files are stored in collection directories whose names begin with an underscore."
+- "All iRODS objects or Python objects"
+- "Querying is tricky"
 ---
 
-This episode describes the tools we use to build and manage lessons.
-These simplify many tasks, but make other things more complicated.
+This episodes describes how to interact with your data in iRODS via the Python API.
 
-## Repositories on GitHub
+## Connect to iRODS
 
-Our lessons are stored in Git repositories (or "repos") on GitHub.
-We use the term *fork* to mean
-"a copy of a GitHub-hosted repo that is also hosted on GitHub"
-and the term *clone* to mean
-"a copy of a GitHub-hosted repo that's located on someone else's machine".
-In both cases,
-the duplicate has a reference that points to the original repo.
+We can connect to our iRODS instance by passing our credentials to a session object. For this we need to import the iRODS session library. However, we also want to savely pass our password. Therefore, we will also import the getpass library. It would even be better if we could have TOTP connected to our iRODS account. However, this is not possible with iRODS yet.
 
-In an ideal world,
-we would put all of the common files used by our lessons
-(such as the CSS style files and the image files with project logos)
-in a template repo.
-The master copy of each lesson would be a fork of that repo,
-and each author's working copy would be a fork of that master:
+~~~
+import getpass
+from irods.session import iRODSSession
+~~~
+{: .language-python}
 
-![Forking Repositories]({{ page.root }}/fig/forking.svg)
-
-However, GitHub only allows a user to have one fork of any particular repo.
-This creates a problem for us because an author may be involved in writing several lessons,
-each with its own repo.
-We therefore use [GitHub Importer][github-importer] to create new lessons.
-After the lesson has been created,
-we manually add the [template repository]({{ site.template_repo }}) as a remote called `template`
-to update the lesson when the template changes.
-
-![Repository Links]({{ page.root }}/fig/repository-links.svg)
 
 ## GitHub Pages
 
