@@ -4,7 +4,10 @@ teaching: 5
 exercises: 0
 questions:
 - "What do you have to consider with data provenance in compute pipelines?"
-
+objectives:
+- "Explain what data provenance is in the context of compute pipelines"
+- "Explain how programmatically addressing data is important in data provenance"
+- "Explain why iRODS is an appropriate choice as storage solution for data provenance"
 keypoints:
 - "Data provenance is key for reproducibility in computations"
 - "Extra metadata is necessary to capture data provenance"
