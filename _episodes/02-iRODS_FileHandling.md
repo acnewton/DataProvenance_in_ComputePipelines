@@ -33,7 +33,7 @@ import getpass
 from irods.session import iRODSSession
 
 pw = getpass.getpass().encode('base64')
-session = iRODSSession(host='<hostname>', port=1247, user='<username>', password=pw.decode('base64'),zone='<zoneName>)'
+session = iRODSSession(host='<hostname>', port=1247, user='<username>', password=pw.decode('base64'),zone='<zoneName>')
 ~~~
 {: .language-python}
 
