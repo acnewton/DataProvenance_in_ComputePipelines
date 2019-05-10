@@ -23,6 +23,6 @@ keypoints:
 
 ## iRODS Python API can be used in compute pipelines
 
-[The next episode]({{ page.root }}/02-02-iRODS_FileHandling/) describes these files.
+[The next episode]({{ page.root }}/02-02-iRODS_FileHandling/) covers how to do basic data object and metadata handling with the iRODS python API.
 
 {% include links.md %}
