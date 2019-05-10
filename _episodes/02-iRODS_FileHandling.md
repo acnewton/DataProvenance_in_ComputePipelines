@@ -1,6 +1,6 @@
 ---
 title: "Introduction iRODS Python API"
-teaching: 30
+teaching: 90
 exercises: 0
 questions:
 - "How to do basic file handling with the iRODS Python API"
@@ -56,122 +56,228 @@ iHome = coll.path
 {: .language-python}
 
 
-## GitHub Pages
+## Upload a data object
 
-If a repository has a branch called `gh-pages` (short for "GitHub Pages"),
-GitHub publishes its content to create a website for the repository.
-If the repository's URL is `https://github.com/USERNAME/REPOSITORY`,
-the website is `https://USERNAME.github.io/REPOSITORY`.
-
-GitHub Pages sites can include static HTML pages,
-which are published as-is,
-or they can use [Jekyll][jekyll] as described below
-to compile HTML and/or Markdown pages with embedded directives
-to create the pages for display.
-
-> ## Why Doesn't My Site Appear?
->
-> If the root directory of a repository contains a file called `.nojekyll`,
-> GitHub will *not* generate a website for that repository's `gh-pages` branch.
-{: .callout}
-
-We write lessons in Markdown because it's simple to learn
-and isn't tied to any specific language.
-(The ReStructured Text format popular in the Python world,
-for example,
-is a complete unknown to R programmers.)
-If authors want to write lessons in something else,
-such as [R Markdown][r-markdown],
-they must generate HTML or Markdown that [Jekyll][jekyll] can process
-and commit that to the repository.
-A [later episode]({{ page.root }}/04-formatting/) describes the Markdown we use.
-
-> ## Teaching Tools
->
-> We do *not* prescribe what tools instructors should use when actually teaching:
-> the [Jupyter Notebook][jupyter],
-> [RStudio][rstudio],
-> and the good ol' command line are equally welcome up on stage.
-> All we specify is the format of the lesson notes.
-{: .callout}
-
-## Jekyll
-
-GitHub uses [Jekyll][jekyll] to turn Markdown into HTML.
-It looks for text files that begin with a header formatted like this:
+The preferred way to upload data to iRODS is a data object put. 
+Now we create the logical path and upload the German version of Alice in wonderland to iRODS:
 
 ~~~
----
-variable: value
-other_variable: other_value
----
-...stuff in the page...
+iPath = iHome + 'Alice-DE.txt'
+session.data_objects.put('aliceInWonderland-DE.txt.utf-8',iPath)
 ~~~
-{: .source}
+{: .language-python}
 
-and inserts the values of those variables into the page when formatting it.
-The three dashes that start the header *must* be the first three characters in the file:
-even a single space before them will make [Jekyll][jekyll] ignore the file.
-
-The header's content must be formatted as [YAML][yaml],
-and may contain Booleans, numbers, character strings, lists, and dictionaries of name/value pairs.
-Values from the header are referred to in the page as `page.variable`.
-For example,
-this page:
+The object carries some vital system information, otherwise it is empty.
 
 ~~~
----
-name: Science
----
-{% raw %}Today we are going to study {{page.name}}.{% endraw %}
+obj = session.data_objects.get(iPath)
+print "Name: ", obj.name
+print "Owner: ", obj.owner_name
+print "Size: ", obj.size
+print "Checksum:", obj.checksum
+print "Create: ", obj.create_time
+print "Modify: ", obj.modify_time
+print "Metadata: ", obj.metadata.items()
 ~~~
-{: .source}
+{: .language-python}
 
-is translated into:
+Less code to write to display the full object:
+~~~
+vars(obj)
+~~~
+{: .language-python}
+
+You can also rename an iRODS data object or move it to a different collection:
+~~~
+session.data_objects.move(obj.path, iHome + '/Alice.txt')
+print coll.data_objects
+~~~
+{: .language-python}
+
+## Metadata handling
+Working with metadata is not completely intuitive, you need a good understanding of python dictionaries and the iRODS python API classes *dataobject*, *collection*, *iRODSMetaData* and *iRODSMetaCollection*.
+
+We start slowly with first creating some metadata for our data.
+Currently, our data object does not carry any user-defined metadata:
 
 ~~~
-<html>
-  <body>
-    <p>Today we are going to study Science.</p>
-  </body>
-</html>
+iPath = iHome + '/Alice.txt'
+obj = session.data_objects.get(iPath)
+print obj.metadata.items()
 ~~~
-{: .html}
+{: .language-python}
 
-> ## Back in the Day...
->
-> The previous version of our template did not rely on Jekyll,
-> but instead required authors to build HTML on their desktops
-> and commit that to the lesson repository's `gh-pages` branch.
-> This allowed us to use whatever mix of tools we wanted for creating HTML (e.g., [Pandoc][pandoc]),
-> but complicated the common case for the sake of uncommon cases,
-> and didn't model the workflow we want learners to use.
-{: .callout}
 
-## Configuration
+Create a key, value, unit entry for our data object:
+~~~
+obj.metadata.add('SOURCE', 'python API training', 'version 1')
+obj.metadata.add('TYPE', 'test file')
+~~~
+{: .language-python}
 
-[Jekyll][jekyll] also reads values from a configuration file called `_config.yml`,
-which are referred to in pages as `site.variable`.
-The [lesson template]({{ site.template_repo }}) does *not* include `_config.yml`,
-since each lesson will change some of its value,
-which would result in merge collisions each time the lesson was updated from the template.
-Instead,
-the [template]({{ site.template_repo }}) contains a script called `bin/lesson_initialize.py`
-which should be run *once* to create an initial `_config.yml` file
-(and a few other files as well).
-The author should then edit the values in the top half of the file.
+If you now print the metadata again, you will see a cryptic list:
+~~~
+print obj.metadata.items()
+~~~
+{: .language-python}
 
-## Collections
+The list contains two metadata python objects.
+To work with the metadata you need to iterate over them and extract the AVU triples:
 
-If several Markdown files are stored in a directory whose name begins with an underscore,
-[Jekyll][jekyll] creates a [collection][jekyll-collection] for them.
-We rely on this for both lesson episodes (stored in `_episodes`)
-and extra files (stored in `_extras`).
-For example,
-putting the extra files in `_extras` allows us to populate the "Extras" menu pulldown automatically.
-To clarify what will appear where,
-we store files that appear directly in the navigation bar
-in the root directory of the lesson.
-[The next episode]({{ page.root }}/03-organization/) describes these files.
+~~~
+[(item.name, item.value, item.units) for item in obj.metadata.items()]
+~~~
+{: .language-python}
+
+Metadata can be used to search for your own data but also for data that someone shared with you. You do not need to know the exact iRODS logical path to retrieve the file, you can search for data wich is annotated accordingly. We will see that in the next section.
+
+**Watch out:** If you do another `data_object.put` you will overwrite not only the bitstream but also all metadata. User-defined metadata will be set to empty.
+
+## Download a data object
+The current release of the API does not support a 'download' or 'get' function for iRODS objects. It is planned though for the next release.
+We will now stream the data object. Data streaming can become handy when up and downloading large files.
+You first open the file and read its contents into memory:
+
+
+~~~
+import os
+buff = session.data_objects.open(obj.path, 'r').read()
+print "Downloading to:", os.environ['HOME']+'/'+os.path.basename(obj.path)
+with open(os.environ['HOME']+'/'+os.path.basename(obj.path), 'wb') as f:
+    f.write(buff) 
+~~~
+{: .language-python}
+
+## Streaming data
+Streaming data is an alternative to upload large data to iRODS or to accumulate data in a data object over time. First you need to create an empty data object in iRODS beofre you can stream in the data.
+
+~~~
+content = 'My contents!'
+obj = session.data_objects.create(iHome + '/stream.txt')
+~~~
+{: .language-python}
+
+This will create a place holder for the data object with no further metadata:
+
+~~~
+print "Name: ", obj.name
+print "Owner: ", obj.owner_name
+print "Size: ", obj.size
+print "Checksum:", obj.checksum
+print "Create: ", obj.create_time
+print "Modify: ", obj.modify_time
+print "Metadata: ", obj.metadata.items()
+~~~
+{: .language-python}
+
+~~~
+vars(obj)
+~~~
+{: .language-python}
+
+We can now stream in our data into that placeholder.
+
+~~~
+with obj.open('w') as obj_desc:
+    obj_desc.write(content)
+obj = session.data_objects.get(iHome + '/stream.txt')
+~~~
+{: .language-python}
+
+Now we check the metadata again:
+
+~~~
+print "Name: ", obj.name
+print "Owner: ", obj.owner_name
+print "Size: ", obj.size
+print "Checksum:", obj.checksum
+print "Create: ", obj.create_time
+print "Modify: ", obj.modify_time
+print "Metadata: ", obj.metadata.items()
+~~~
+{: .language-python}
+
+
+~~~
+vars(obj)
+~~~
+{: .language-python}
+
+
+## iRODS collections
+You can organise your data in iRODS just like on a POSIX file system.
+
+~~~
+session.collections.create(iHome + '/Books/Alice')
+~~~
+{: .language-python}
+
+And test:
+
+~~~
+coll.path
+coll.subcollections
+~~~
+{: .language-python}
+
+Just as data objects you can also move and rename collections with all their data objects and subcollections:
+
+~~~
+session.collections.move(iHome + '/Books', iHome + '/MyBooks')
+coll = session.collections.get(iHome)
+coll.subcollections
+~~~
+{: .language-python}
+
+
+~~~
+[vars(c) for c in coll.subcollections]
+~~~
+{: .language-python}
+
+
+Remove a collection recursively with all data objects.
+
+~~~
+coll = session.collections.get(iHome + '/MyBooks')
+coll.remove(recurse=True)
+~~~
+{: .language-python}
+
+
+Do not be fooled, the python object 'coll' looks like as if the collection is still in iRODS. You need to refetch the collection (refresh).
+
+~~~
+coll = session.collections.get(iHome)
+coll.subcollections
+[vars(c) for c in coll.subcollections]
+~~~
+{: .language-python}
+
+
+To upload a collection from the unix file system one has to iterate over the directory and create collections and data objects.
+We will upload the directory 'aliceInWonderland'
+
+~~~
+import os
+dPath = os.environ['HOME'] + '/aliceInWonderland'
+walk = [dPath]
+while len(walk) > 0:
+    for srcDir, dirs, files in os.walk(walk.pop()):
+        print srcDir, dirs, files
+        walk.extend(dirs)
+        iPath = iHome + srcDir.split(os.environ['HOME'])[1]
+        print "CREATE", iPath
+        newColl = session.collections.create(iPath)
+        for fname in files:
+            print "CREATE", newColl.path+'/'+fname
+            session.data_objects.put(srcDir+'/'+fname, newColl.path+'/'+fname)
+~~~
+{: .language-python}
+
+
+
+
+[The next episode]({{ page.root }}/03-dataProcessingWithRodsData/) describes these files.
 
 {% include links.md %}
