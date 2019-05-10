@@ -20,11 +20,20 @@ This episodes describes how to interact with your data in iRODS via the Python A
 
 ## Connect to iRODS
 
-We can connect to our iRODS instance by passing our credentials to a session object. For this we need to import the iRODS session library. However, we also want to savely pass our password. Therefore, we will also import the getpass library. It would even be better if we could have TOTP connected to our iRODS account. However, this is not possible with iRODS yet.
+We can connect to our iRODS instance by passing our credentials to a session object.
+For this we need to import the iRODS session library.
+However, we also want to savely pass our password.
+Therefore, we will also import the getpass library.
+It would even be better if we could have TOTP connected to our iRODS account. 
+However, this is not possible with iRODS yet.
+After importing the correct libraries, we can safely store our password and send our credentials to iRODS.
 
 ~~~
 import getpass
 from irods.session import iRODSSession
+
+pw = getpass.getpass().encode('base64')
+session = iRODSSession(host='<hostname>', port=1247, user='<username>', password=pw.decode('base64'),zone='<zoneName>)'
 ~~~
 {: .language-python}
 
