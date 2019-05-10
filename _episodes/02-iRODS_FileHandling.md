@@ -207,6 +207,7 @@ vars(obj)
 ## iRODS collections
 You can organise your data in iRODS just like on a POSIX file system.
 
+### Create a collection
 ~~~
 session.collections.create(iHome + '/Books/Alice')
 ~~~
@@ -220,6 +221,8 @@ coll.subcollections
 ~~~
 {: .language-python}
 
+
+### Move a collection
 Just as data objects you can also move and rename collections with all their data objects and subcollections:
 
 ~~~
@@ -235,6 +238,7 @@ coll.subcollections
 ~~~
 {: .language-python}
 
+### Remove a collection
 
 Remove a collection recursively with all data objects.
 
@@ -255,6 +259,8 @@ coll.subcollections
 {: .language-python}
 
 
+### Upload a collection
+
 To upload a collection from the unix file system one has to iterate over the directory and create collections and data objects.
 We will upload the directory 'aliceInWonderland'
 
@@ -274,6 +280,136 @@ while len(walk) > 0:
             session.data_objects.put(srcDir+'/'+fname, newColl.path+'/'+fname)
 ~~~
 {: .language-python}
+
+There is mixed tab and whitespace in the code. When copy&paste the code, it is not working,
+The standard recommends 4 spaces.
+https://www.python.org/dev/peps/pep-0008/#tabs-or-spaces
+
+
+### Iterate over collection
+Similar to we walked over a directory with sub directories and files in the unix file system we can walk over collections and subcollections in iRODS. Here we walk over the whole aliceInWonderland collection and list Collections and Data objects:
+
+
+~~~
+for srcColl, colls, objs in coll.walk():
+    print 'C-', srcColl.path
+    for o in objs:
+        print o.name
+~~~
+{: .language-python}
+
+## Sharing data
+
+You can set ACLs on data objects and collections in iRODS.
+To check the default ACLs do:
+
+~~~
+print session.permissions.get(coll)
+print session.permissions.get(obj)
+
+[vars(p) for p in session.permissions.get(coll)]
+~~~
+{: .language-python}
+
+Here we share a collection with the iRODS group public. Every member of the group will have read rights.
+
+~~~
+from irods.access import iRODSAccess
+acl = iRODSAccess('read', coll.path, 'public', session.zone)
+session.permissions.set(acl)
+print session.permissions.get(coll)
+~~~
+{: .language-python}
+
+To withdraw certain ACLs do:
+
+~~~
+acl = iRODSAccess('null', coll.path, 'public', session.zone)
+session.permissions.set(acl)
+print session.permissions.get(coll)
+~~~
+{: .language-python}
+
+One can also give 'write' access or set the 'own'ership.
+
+Collections have a special ACL, the 'inherit' ACL. If 'inherit' is set, all subcollections and data objects will inherit their ACLs from their parent collection automatically.
+
+## Searching for data in iRODS
+
+We will now try to find all data in this iRODS instance we have access to and which carries the key *author* with value *Lewis Carroll*. And we need to assemble the iRODS logical path.
+
+~~~
+from irods.models import Collection, DataObject, CollectionMeta, DataObjectMeta
+~~~
+{: .language-python}
+
+We need the collection name and data object name of the data objects. This command will give us all data objects we have access to:
+
+~~~
+query = session.query(Collection.name, DataObject.name)
+~~~
+{: .language-python}
+
+Now we can filter the results for data objects which carry a user-defined metadata item with name 'author' and value 'Lewis Carroll'. To this end we have to chain two filters:
+
+~~~
+filteredQuery = query.filter(DataObjectMeta.name == 'author').\
+    filter(DataObjectMeta.value == 'Lewis Carroll')
+print filteredQuery.all()
+~~~
+{: .language-python}
+
+
+Python prints the results neatly on the prompt, however to extract the information and parsing it to other functions is pretty complicated. Every entry you see in the output is not a string, but actually a python object with many functions. That gives you the advantage to link the output to the rows and comlumns in the sql database running in the background of iRODS. For normal user interaction, however, it needs some explanation and help.
+
+### Parsing the iquest output
+To work with the results of the query, we need to get them in an iterable format:
+
+~~~
+results = filteredQuery.get_results()
+~~~
+{: .language-python}
+
+**Watch out**: *results* is a generator which you can only use once to iterate over.
+
+We can now iterate over the results and build our iRODS paths (*COLL_NAME/DATA_NAME*) of the data files:
+
+~~~
+iPaths = []
+
+for item in results:
+    for k in item.keys():
+        if k.icat_key == 'DATA_NAME':
+            name = item[k]
+        elif k.icat_key == 'COLL_NAME':
+            coll = item[k]
+        else:
+            continue
+    iPaths.append(coll+'/'+name)
+print '\n'.join(iPaths)
+~~~
+{: .language-python}
+
+How did we know which keys to use?
+We asked in the query for *Collection.name* and *DataObject.name*.
+Have look at these two objects:
+
+
+~~~
+print Collection.name.icat_key
+print DataObject.name.icat_key
+~~~
+{: .language-python}
+
+The *icat_key* is the keyword used in the database behind iRODS to store the information.
+
+> ## Putting it all together
+> 1. Search for all data in the iRODS instance by the author Lewis Carroll.
+> 2. Create an own collection in your iRODS home collection.
+> 3. Copy (`session.data_objects.copy()`) the data objects to the new collection without downloading and uploading them.
+> 4. Verify the checksums.
+> 5. Open the collection to your neighbour by giving read rights.
+
 
 
 
