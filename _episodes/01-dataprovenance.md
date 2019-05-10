@@ -1,12 +1,25 @@
 ---
-title: "Lesson Design"
-redirect_to:
-- https://carpentries.github.io/curriculum-development/
+title: "Why difficult to have data provenance in compute pipelines?"
+teaching: 5
+exercises: 0
 questions:
-- "How do we design lessons?"
-hidden: True
+- "What do you have to consider with data provenance in compute pipelines?"
+
+keypoints:
+- "Data provenance is key for reproducibility in computations"
+- "Extra metadata is necessary to capture data provenance"
+- "in this tutorial we will be using iRODS Python API to address data programmatically"
 
 ---
 
-Visit our [new curriculum development guide](https://carpentries.github.io/curriculum-development/).
+## Data provenance shows the history of data
 
+## All steps need to be taken into account in a compute pipeline
+
+## Metadata is essential in recording data provenance
+
+## iRODS Python API can be used in compute pipelines
+
+[The next episode]({{ page.root }}/02-02-iRODS_FileHandling/) describes these files.
+
+{% include links.md %}
