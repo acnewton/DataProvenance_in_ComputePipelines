@@ -419,6 +419,6 @@ The *icat_key* is the keyword used in the database behind iRODS to store the inf
 
 
 
-[The next episode]({{ page.root }}/03-dataProcessingWithRodsData/) describes these files.
+[The next episode]({{ page.root }}/03-dataProcessingWithRodsData/) describes how you can use these data object and metadata handling can be used in a simple compute pipeline.
 
 {% include links.md %}
