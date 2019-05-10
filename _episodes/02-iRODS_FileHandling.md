@@ -37,6 +37,24 @@ session = iRODSSession(host='<hostname>', port=1247, user='<username>', password
 ~~~
 {: .language-python}
 
+We can test whether our connection succeeded by trying to get our home folder:
+~~~
+coll = session.collections.get('/aliceZone/home/irods-user1')
+print(coll.data_objects)
+print(coll.subcollections)
+~~~
+{: .language-python}
+
+So far no data is stored in your iRODS collection.
+Let us upload some data.
+
+We will need our homefolder more often as a reference point, so let us store the collection path:
+
+~~~
+iHome = coll.path
+~~~
+{: .language-python}
+
 
 ## GitHub Pages
 
