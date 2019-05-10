@@ -1,5 +1,5 @@
 ---
-title: "Why difficult to have data provenance in compute pipelines?"
+title: "Difficulty with data provenance in compute pipelines"
 teaching: 5
 exercises: 0
 questions:
