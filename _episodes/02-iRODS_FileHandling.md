@@ -79,13 +79,13 @@ The object carries some vital system information, otherwise it is empty.
 
 ~~~
 obj = session.data_objects.get(iPath)
-print "Name: ", obj.name
-print "Owner: ", obj.owner_name
-print "Size: ", obj.size
-print "Checksum:", obj.checksum
-print "Create: ", obj.create_time
-print "Modify: ", obj.modify_time
-print "Metadata: ", obj.metadata.items()
+print("Name: ", obj.name)
+print("Owner: ", obj.owner_name)
+print("Size: ", obj.size)
+print("Checksum:", obj.checksum)
+print("Create: ", obj.create_time)
+print("Modify: ", obj.modify_time)
+print("Metadata: ", obj.metadata.items())
 ~~~
 {: .language-python}
 
@@ -98,7 +98,7 @@ vars(obj)
 You can also rename an iRODS data object or move it to a different collection:
 ~~~
 session.data_objects.move(obj.path, iHome + '/Alice.txt')
-print coll.data_objects
+print(coll.data_objects)
 ~~~
 {: .language-python}
 
@@ -111,7 +111,7 @@ Currently, our data object does not carry any user-defined metadata:
 ~~~
 iPath = iHome + '/Alice.txt'
 obj = session.data_objects.get(iPath)
-print obj.metadata.items()
+print(obj.metadata.items())
 ~~~
 {: .language-python}
 
@@ -125,7 +125,7 @@ obj.metadata.add('TYPE', 'test file')
 
 If you now print the metadata again, you will see a cryptic list:
 ~~~
-print obj.metadata.items()
+print(obj.metadata.items())
 ~~~
 {: .language-python}
 
@@ -168,13 +168,13 @@ obj = session.data_objects.create(iHome + '/stream.txt')
 This will create a place holder for the data object with no further metadata:
 
 ~~~
-print "Name: ", obj.name
-print "Owner: ", obj.owner_name
-print "Size: ", obj.size
-print "Checksum:", obj.checksum
-print "Create: ", obj.create_time
-print "Modify: ", obj.modify_time
-print "Metadata: ", obj.metadata.items()
+print("Name: ", obj.name)
+print("Owner: ", obj.owner_name)
+print("Size: ", obj.size)
+print("Checksum:", obj.checksum)
+print("Create: ", obj.create_time)
+print("Modify: ", obj.modify_time)
+print("Metadata: ", obj.metadata.items())
 ~~~
 {: .language-python}
 
@@ -195,13 +195,13 @@ obj = session.data_objects.get(iHome + '/stream.txt')
 Now we check the metadata again:
 
 ~~~
-print "Name: ", obj.name
-print "Owner: ", obj.owner_name
-print "Size: ", obj.size
-print "Checksum:", obj.checksum
-print "Create: ", obj.create_time
-print "Modify: ", obj.modify_time
-print "Metadata: ", obj.metadata.items()
+print("Name: ", obj.name)
+print("Owner: ", obj.owner_name)
+print("Size: ", obj.size)
+print("Checksum:", obj.checksum)
+print("Create: ", obj.create_time)
+print("Modify: ", obj.modify_time)
+print("Metadata: ", obj.metadata.items())
 ~~~
 {: .language-python}
 
@@ -278,13 +278,13 @@ dPath = os.environ['HOME'] + '/aliceInWonderland'
 walk = [dPath]
 while len(walk) > 0:
     for srcDir, dirs, files in os.walk(walk.pop()):
-        print srcDir, dirs, files
+        print(srcDir, dirs, files)
         walk.extend(dirs)
         iPath = iHome + srcDir.split(os.environ['HOME'])[1]
-        print "CREATE", iPath
+        print("CREATE", iPath)
         newColl = session.collections.create(iPath)
         for fname in files:
-            print "CREATE", newColl.path+'/'+fname
+            print("CREATE", newColl.path+'/'+fname)
             session.data_objects.put(srcDir+'/'+fname, newColl.path+'/'+fname)
 ~~~
 {: .language-python}
@@ -300,9 +300,9 @@ Similar to we walked over a directory with sub directories and files in the unix
 
 ~~~
 for srcColl, colls, objs in coll.walk():
-    print 'C-', srcColl.path
+    print('C-', srcColl.path)
     for o in objs:
-        print o.name
+        print(o.name)
 ~~~
 {: .language-python}
 
@@ -312,8 +312,8 @@ You can set ACLs on data objects and collections in iRODS.
 To check the default ACLs do:
 
 ~~~
-print session.permissions.get(coll)
-print session.permissions.get(obj)
+print(session.permissions.get(coll))
+print(session.permissions.get(obj))
 
 [vars(p) for p in session.permissions.get(coll)]
 ~~~
@@ -325,7 +325,7 @@ Here we share a collection with the iRODS group public. Every member of the grou
 from irods.access import iRODSAccess
 acl = iRODSAccess('read', coll.path, 'public', session.zone)
 session.permissions.set(acl)
-print session.permissions.get(coll)
+print(session.permissions.get(coll))
 ~~~
 {: .language-python}
 
@@ -334,7 +334,7 @@ To withdraw certain ACLs do:
 ~~~
 acl = iRODSAccess('null', coll.path, 'public', session.zone)
 session.permissions.set(acl)
-print session.permissions.get(coll)
+print(session.permissions.get(coll))
 ~~~
 {: .language-python}
 
@@ -363,7 +363,7 @@ Now we can filter the results for data objects which carry a user-defined metada
 ~~~
 filteredQuery = query.filter(DataObjectMeta.name == 'author').\
     filter(DataObjectMeta.value == 'Lewis Carroll')
-print filteredQuery.all()
+print(filteredQuery.all())
 ~~~
 {: .language-python}
 
@@ -394,7 +394,7 @@ for item in results:
         else:
             continue
     iPaths.append(coll+'/'+name)
-print '\n'.join(iPaths)
+print('\n'.join(iPaths))
 ~~~
 {: .language-python}
 
@@ -404,8 +404,8 @@ Have look at these two objects:
 
 
 ~~~
-print Collection.name.icat_key
-print DataObject.name.icat_key
+print(Collection.name.icat_key)
+print(DataObject.name.icat_key)
 ~~~
 {: .language-python}
 
