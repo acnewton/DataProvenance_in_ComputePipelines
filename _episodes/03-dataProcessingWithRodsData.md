@@ -20,7 +20,7 @@ keypoints:
 
 ## Under construction
 
-Thanks for your intesest in this episode. We are currently working hard to provide you with a course which teaches the main Questions and Objectives shown in the overview above.
+Thank you for your interest in this episode. We are currently working hard to provide you with a course which teaches the main Questions and Objectives shown in the overview above.
 
 [The next episode]({{ page.root }}/04-AdvancedUseCase/) will in the future cover a more advanced compute pipeline.
 
