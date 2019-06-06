@@ -19,7 +19,11 @@ keypoints:
 This episode describes how to interact with your data in iRODS via the Python API.
 
 You can use your own environment or start simply push the button which takes you to a Jupyter Notebook which you can use to run the iRODS commands explained in this lesson:
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/acnewton/IntroPythonAPIiRODS/master)
+<!--[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/acnewton/IntroPythonAPIiRODS/master)-->
+
+<a href="https://mybinder.org/v2/gh/acnewton/IntroPythonAPIiRODS/master">
+  <img src="https://mybinder.org/badge_logo.svg" width="400px">
+</a>
 
 <!--<a href="http://binder.pangeo.io/v2/gh/jcrist/anacondacon-2019-tutorial/master">
   <img src="http://binder.pangeo.io/badge.svg" width="200px">
