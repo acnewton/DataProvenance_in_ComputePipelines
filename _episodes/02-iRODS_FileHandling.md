@@ -16,9 +16,9 @@ keypoints:
 - "Querying is tricky"
 ---
 
-This episodes describes how to interact with your data in iRODS via the Python API.
+This episode describes how to interact with your data in iRODS via the Python API.
 
-You can use your own environment or start simply push the button which takes you to a completely prepared environment:
+You can use your own environment or start simply push the button which takes you to a Jupyter Notebook which you can use to run the iRODS commands explained in this lesson:
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/acnewton/IntroPythonAPIiRODS/master)
 
 <!--<a href="http://binder.pangeo.io/v2/gh/jcrist/anacondacon-2019-tutorial/master">
@@ -32,8 +32,8 @@ We can connect to our iRODS instance by passing our credentials to a session obj
 For this we need to import the iRODS session library.
 However, we also want to savely pass our password.
 Therefore, we will also import the getpass library.
-It would even be better if we could have TOTP connected to our iRODS account. 
-However, this is not possible with iRODS yet.
+<!--It would even be better if we could have TOTP connected to our iRODS account. 
+However, this is not possible with iRODS yet.-->
 After importing the correct libraries, we can safely store our password and send our credentials to iRODS.
 
 ~~~
@@ -66,12 +66,12 @@ iHome = coll.path
 
 ## Upload a data object
 
-The preferred way to upload data to iRODS is a data object put. 
-Now we create the logical path and upload the German version of Alice in wonderland to iRODS:
+The preferred way to upload data to iRODS is a data object `put`.
+Now we create the logical path and upload the Italian version of Alice in wonderland to iRODS:
 
 ~~~
-iPath = iHome + 'Alice-DE.txt'
-session.data_objects.put('aliceInWonderland-DE.txt.utf-8',iPath)
+iPath = iHome + 'Alice-IT.txt'
+session.data_objects.put('aliceInWonderland-IT.txt.utf-8',iPath)
 ~~~
 {: .language-python}
 
@@ -142,11 +142,7 @@ Metadata can be used to search for your own data but also for data that someone 
 **Watch out:** If you do another `data_object.put` you will overwrite not only the bitstream but also all metadata. User-defined metadata will be set to empty.
 
 ## Download a data object
-The current release of the API does not support a 'download' or 'get' function for iRODS objects. It is planned though for the next release.
-We will now stream the data object. Data streaming can become handy when up and downloading large files.
-You first open the file and read its contents into memory:
-
-
+Files can also be downloaded. The download option is in `get`, although a bit hidden... If a `file` option is given, the file is not only cached in memory, but saved locally:
 ~~~
 import os
 buff = session.data_objects.open(obj.path, 'r').read()
@@ -212,10 +208,9 @@ vars(obj)
 {: .language-python}
 
 
-## iRODS collections
-You can organise your data in iRODS just like on a POSIX file system.
 
-### Create a collection
+## Create a collection
+Similarly to a UNIX file system, you can organise your data in iRODS in collections, the iRODS name for directories. First we are going to create a collection. Note that you can create collections recursively:
 ~~~
 session.collections.create(iHome + '/Books/Alice')
 ~~~
@@ -230,7 +225,7 @@ coll.subcollections
 {: .language-python}
 
 
-### Move a collection
+## Move a collection
 Just as data objects you can also move and rename collections with all their data objects and subcollections:
 
 ~~~
@@ -246,7 +241,7 @@ coll.subcollections
 ~~~
 {: .language-python}
 
-### Remove a collection
+## Remove a collection
 
 Remove a collection recursively with all data objects.
 
@@ -267,7 +262,7 @@ coll.subcollections
 {: .language-python}
 
 
-### Upload a collection
+## Upload a collection
 
 To upload a collection from the unix file system one has to iterate over the directory and create collections and data objects.
 We will upload the directory 'aliceInWonderland'
@@ -294,7 +289,7 @@ The standard recommends 4 spaces.
 https://www.python.org/dev/peps/pep-0008/#tabs-or-spaces
 
 
-### Iterate over collection
+## Iterate over collection
 Similar to we walked over a directory with sub directories and files in the unix file system we can walk over collections and subcollections in iRODS. Here we walk over the whole aliceInWonderland collection and list Collections and Data objects:
 
 
@@ -370,7 +365,7 @@ print(filteredQuery.all())
 
 Python prints the results neatly on the prompt, however to extract the information and parsing it to other functions is pretty complicated. Every entry you see in the output is not a string, but actually a python object with many functions. That gives you the advantage to link the output to the rows and comlumns in the sql database running in the background of iRODS. For normal user interaction, however, it needs some explanation and help.
 
-### Parsing the iquest output
+## Parsing the iquest output
 To work with the results of the query, we need to get them in an iterable format:
 
 ~~~
