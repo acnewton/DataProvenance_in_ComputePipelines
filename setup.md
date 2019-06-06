@@ -2,6 +2,7 @@
 title: Setup
 ---
 
+<!--
 Our lesson template is kept in the [`carpentries/styles` repository][styles]. The `styles`
 repository is carefully curated so that changes made to it are easily mergable by downstream
 lessons. The `styles` repository contains various bits that take Markdown files and render them as a
@@ -235,5 +236,6 @@ Julian Thilo wrote instructions for [installing Jekyll on Windows][jekyll-window
 If you want to run `bin/lesson_check.py` (which is invoked by `make lesson-check`)
 you will need Jekyll (so that you have its Markdown parser, which is called Kramdown)
 and the [PyYAML][pyyaml] module for Python 3.
+-->
 
 {% include links.md %}
