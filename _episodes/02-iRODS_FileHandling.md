@@ -71,7 +71,7 @@ Now we create the logical path and upload the Italian version of Alice in wonder
 
 ~~~
 iPath = iHome + 'Alice-IT.txt'
-session.data_objects.put('aliceInWonderland-IT.txt.utf-8',iPath)
+session.data_objects.put('AliceInWonderland-IT.txt.utf-8',iPath)
 ~~~
 {: .language-python}
 
