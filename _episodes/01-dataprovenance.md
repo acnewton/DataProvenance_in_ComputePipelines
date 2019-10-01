@@ -21,7 +21,7 @@ In what state a data object is in is important information for reproducing that 
 In more concrete terms, with proper data provenance of data objects you have the chance of finaly answering with confidence questions like "what script generated this plot?" or "who is responsible for creating the latest version of this dataset which still made any sense?".
 Using version control systems for code, like Git, Mercurial or Subversion, the provenance of code is to some extent maintained. 
 However, combining code with data is not supported by these systems.
-In this lesson we will explore how this could be taken in to account with using sophisticated storage solutions like iRODS.
+In this lesson we will explore how this could be taken in to account with using storage solutions like iRODS.
 ![]({{ page.root }}/fig/phd101212s.gif)
 
 ## All steps need to be taken into account in a compute pipeline
