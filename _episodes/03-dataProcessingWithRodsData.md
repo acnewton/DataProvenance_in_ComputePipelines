@@ -16,6 +16,10 @@ keypoints:
   <img src="http://binder.pangeo.io/badge.svg" width="200px">
 </a>
 -->
+<a href="https://mybinder.org/v2/gh/acnewton/IntroPythonAPIiRODS/master">
+  <img src="https://mybinder.org/badge_logo.svg" width="400px">
+</a>
+
 
 ## Connect to iRODS
 Note this is a recap from the previous chapter.

@@ -34,7 +34,7 @@ To this end, it is useful to be able to programmatically access your data, i.e. 
 
 ## Metadata is essential in recording data provenance
 The provenance of data should be stored in a format which makes it obvious to which data it refers to. 
-This seems obvious, but the link from the metadata to the data object can be quickly lost if you are not carefull. 
+This seems obvious, but the link from the metadata to the data object can be quickly lost if you are not careful. 
 In this lesson we will make use of iRODS. iRODS makes it possible to add metadata directly to the data object itself. 
 This metadata can then be viewed or queryed directly via the Python API of iRODS. 
 
